@@ -14,10 +14,10 @@ class TwitterClient(object):
     '''
     def __init__(self, query, retweets_only=False):
         
-        consumer_key = 'ugo5bNfeYr82v1vPmmAxxqZLs'
-        consumer_secret = 'i0JbFr06bQlAlJyilA3JZpNm1muns0WNsyWz9ahuOde8xwFW7H'
-        access_token = '805159244270104576-4DMAk7ijvgfLwxxFh2MDbkA3iUsD6xh'
-        access_token_secret = 'mKOD4uQb2W2kV3P0BBYnqQkwgvcLGM7g1EkePFZDvwdWz'
+        consumer_key = 'xxxxx'
+        consumer_secret = 'xxxxx'
+        access_token = 'xxxxx'
+        access_token_secret = 'xxxxx'
         
         try:
             self.auth = OAuthHandler(consumer_key, consumer_secret)
