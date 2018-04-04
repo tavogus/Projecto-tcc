@@ -2,10 +2,12 @@ import os
 import re
 import sys
 import csv
+import datetime
 import tweepy
 from tweepy import OAuthHandler
 from textblob import TextBlob
-from textblob.classifiers import NaiveBayesClassifier
+import pymongo
+from pymongo import MongoClient
 
 
 class TwitterClient(object):
@@ -14,10 +16,10 @@ class TwitterClient(object):
     '''
     def __init__(self, query, retweets_only=False):
         
-        consumer_key = 'xxxxx'
-        consumer_secret = 'xxxxx'
-        access_token = 'xxxxx'
-        access_token_secret = 'xxxxx'
+        consumer_key = 'ugo5bNfeYr82v1vPmmAxxqZLs'
+        consumer_secret = 'i0JbFr06bQlAlJyilA3JZpNm1muns0WNsyWz9ahuOde8xwFW7H'
+        access_token = '805159244270104576-4DMAk7ijvgfLwxxFh2MDbkA3iUsD6xh'
+        access_token_secret = 'mKOD4uQb2W2kV3P0BBYnqQkwgvcLGM7g1EkePFZDvwdWz'
         
         try:
             self.auth = OAuthHandler(consumer_key, consumer_secret)
@@ -51,7 +53,7 @@ class TwitterClient(object):
         tweets = []
 
         try:
-            search = self.api.search(q=self.query,count=self.tweet_count_max)
+            search = self.api.search(q=self.query,lang="en",count=self.tweet_count_max)
             if not search:
                pass
             for tweet in search:
@@ -60,6 +62,8 @@ class TwitterClient(object):
                 tweets_list['user'] = tweet.user.screen_name
                 tweets_list['text'] = tweet.text
                 tweets_list['sentiment'] = self.get_tweet_sentiment(tweet.text)
+
+                self.insert_mongo(tweets_list)
 
                 if tweet.retweet_count > 0 and self.retweets_only == 1:
                    if tweets_list not in tweets:
@@ -71,6 +75,20 @@ class TwitterClient(object):
             return tweets  
 
         except tweepy.TweepError as e:
-                print('Error: ' + str(e))       
+                print('Error: ' + str(e))     
 
+    def insert_mongo(self,tweets_list):
+        client = MongoClient('localhost', 27017)
+        db = client['tcc']
+        collection = db['tweets']
+
+        tweets_obj = {"user": tweets_list['user'],
+                      "text": tweets_list['text'],
+                      "sentiment": tweets_list['sentiment'],
+                      "date": datetime.datetime.utcnow()}
+        try:
+           db.collection.insert_one(tweets_obj)
+           print("Inserted data successfully")
+        except Exception as e:
+           print (str(e))
 
