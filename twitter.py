@@ -16,10 +16,10 @@ class TwitterClient(object):
     '''
     def __init__(self, query, retweets_only=False):
         
-        consumer_key = 'xxx'
-        consumer_secret = 'xxx'
-        access_token = 'xxx'
-        access_token_secret = 'xxx'
+        consumer_key = 'ugo5bNfeYr82v1vPmmAxxqZLs'
+        consumer_secret = 'i0JbFr06bQlAlJyilA3JZpNm1muns0WNsyWz9ahuOde8xwFW7H'
+        access_token = '805159244270104576-4DMAk7ijvgfLwxxFh2MDbkA3iUsD6xh'
+        access_token_secret = 'mKOD4uQb2W2kV3P0BBYnqQkwgvcLGM7g1EkePFZDvwdWz'
         
         try:
             self.auth = OAuthHandler(consumer_key, consumer_secret)
@@ -42,11 +42,11 @@ class TwitterClient(object):
 
     def get_tweet_sentiment(self, tweet):
         analysis = TextBlob(self.clean_tweet(tweet))
-        if analysis.sentiment.polarity > 0:
+        if analysis.sentiment.polarity > 0.1 and analysis.sentiment.polarity <= 1:
             return 'positive'
         elif analysis.sentiment.polarity == 0:
             return 'neutral'
-        else:
+        elif analysis.sentiment.polarity > -1.0 and analysis.sentiment.polarity <= -0.1:
             return 'negative'    
    
     def get_tweets(self):
